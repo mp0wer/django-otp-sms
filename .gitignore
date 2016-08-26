@@ -1,0 +1,8 @@
+.idea*
+*.pyc
+*.sql
+*.tar*
+*.zip
+*.rar
+dist/
+/*.egg-info
