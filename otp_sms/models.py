@@ -9,7 +9,6 @@ from django_otp.oath import TOTP
 from django_otp.util import random_hex, hex_validator
 from django.utils.translation import ugettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
-from .adapters import AdapterError
 from .conf import settings
 
 
@@ -64,30 +63,16 @@ class SMSDevice(models.Model):
     def bin_key(self):
         return unhexlify(self.key.encode())
 
-    def generate_challenge(self):
-        """
-        Sends the current TOTP token to ``self.number``.
-
-        :returns: :setting:`OTP_SMS_CHALLENGE_MESSAGE` on success.
-        :raises: Exception if delivery fails.
-
-        """
+    def generate_token(self):
         totp = self.totp_obj()
         token = format(totp.token(), '06d')
         message = settings.OTP_SMS_TOKEN_TEMPLATE.format(token=token)
-        challenge = settings.OTP_SMS_CHALLENGE_MESSAGE.format(token=token)
         self._deliver_token(message)
-
-        return challenge
 
     def _deliver_token(self, token):
         adapter_class = import_string(settings.OTP_SMS_ADAPTER)
         adapter = adapter_class(settings.OTP_SMS_AUTH)
-        try:
-            adapter.send(self.number, token, sender=settings.OTP_SMS_FROM)
-        except AdapterError as e:
-            if settings.DEBUG:
-                raise e
+        adapter.send(self.number, token, sender=settings.OTP_SMS_FROM)
 
     def verify_token(self, token):
         try:

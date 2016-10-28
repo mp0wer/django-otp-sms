@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate
 from phonenumber_field.formfields import PhoneNumberField
 from .models import SMSDevice
 from .conf import settings
+from .adapters import AdapterError
 
 
 class SMSAuthenticationFormMixin(object):
@@ -20,7 +21,7 @@ class SMSAuthenticationFormMixin(object):
         if last_attempt_time:
             try:
                 last_attempt_time = datetime.fromtimestamp(last_attempt_time)
-            except:
+            except Exception:
                 last_attempt_time = None
 
         if attempt:
@@ -42,16 +43,15 @@ class SMSAuthenticationFormMixin(object):
         self.request.session[settings.OTP_SMS_SESSION_KEY_LAST_ATTEMPT_TIME] = time.mktime(datetime.now().timetuple())
         self.request.session[settings.OTP_SMS_SESSION_KEY_ATTEMPT] = attempt + 1
 
-    def generate_challenge(self, device):
+    def generate_token(self, device):
         self.request.session[settings.OTP_SMS_SESSION_KEY_DEVICE_ID] = device.pk
 
         try:
-            challenge = device.generate_challenge() if (device is not None) else None
-        except Exception:
+            device.generate_token()
+        except AdapterError as e:
+            if settings.DEBUG:
+                raise e
             raise forms.ValidationError(_('Error sending sms'))
-        else:
-            if challenge is None:
-                raise forms.ValidationError(_('Error sending sms'))
 
 
 class SMSAuthenticationForm(AuthenticationForm):
@@ -92,7 +92,7 @@ class SMSSendForm(SMSAuthenticationFormMixin, forms.ModelForm):
         instance = super(SMSSendForm, self).save(*args, **kwargs)
 
         try:
-            self.generate_challenge(instance)
+            self.generate_token(instance)
         except forms.ValidationError as e:
             self.add_error(None, e)
             return None

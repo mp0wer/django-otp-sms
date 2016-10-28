@@ -58,7 +58,6 @@ class SMSRuAdapter(BaseAdapter):
                 del args["api_id"]
 
         url = "http://sms.ru/%s?%s" % (method, urllib.urlencode(args))
-        # print url
         res = urllib2.urlopen(url).read().strip().split("\n")
         if res[0] == "200":
             raise AdapterError("The supplied API key is wrong")

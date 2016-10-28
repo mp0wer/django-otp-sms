@@ -13,7 +13,6 @@ class Settings(object):
         'OTP_SMS_COUNT_ATTEMPTS': 3,
         'OTP_SMS_LATENCY_ATTEMPTS': timedelta(minutes=5),
         'OTP_SMS_AUTH': None,
-        'OTP_SMS_CHALLENGE_MESSAGE': 'Sent by SMS',
         'OTP_SMS_FROM': None,
         'OTP_SMS_TOKEN_TEMPLATE': '{token}',
         'OTP_SMS_TOKEN_VALIDITY': 30,
