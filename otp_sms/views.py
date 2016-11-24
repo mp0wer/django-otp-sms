@@ -13,6 +13,7 @@ from django.contrib.auth import (
 )
 from formtools.wizard.views import SessionWizardView
 from .forms import SMSSendForm, SMSAuthenticationForm
+from .signals import user_logged_in
 
 
 class SMSAuthenticationWizardView(SessionWizardView):
@@ -24,9 +25,11 @@ class SMSAuthenticationWizardView(SessionWizardView):
         (SMS_FORM_KEY, SMSSendForm),
         (AUTH_FORM_KEY, SMSAuthenticationForm),
     ]
+    create_user_if_not_exists = False
 
     @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
+        request.otp_sms_create_user = self.create_user_if_not_exists
         return super(SMSAuthenticationWizardView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self, step=None):
@@ -37,9 +40,9 @@ class SMSAuthenticationWizardView(SessionWizardView):
         return kwargs
 
     def get_initial_for_auth_form(self):
-        sms_form_data = self.get_cleaned_data_for_step(self.SMS_FORM_KEY) or {}
+        sms_form_data = self.storage.get_step_data(self.SMS_FORM_KEY) or {}
         return {
-            'username': sms_form_data.get('number')
+            'username': sms_form_data.get('%s-number' % self.SMS_FORM_KEY)
         }
 
     def get_form_initial(self, step):
@@ -56,7 +59,10 @@ class SMSAuthenticationWizardView(SessionWizardView):
         return super(SMSAuthenticationWizardView, self).render_next_step(form, **kwargs)
 
     def render_done(self, form, **kwargs):
-        auth_login(self.request, form.get_user())
+        user = form.get_user()
+        phone = form.cleaned_data.get('username')
+        auth_login(self.request, user)
+        user_logged_in.send(sender=user.__class__, request=self.request, user=user, phone=phone)
         done_response = HttpResponseRedirect(self.get_redirect_to())
         self.storage.reset()
         return done_response

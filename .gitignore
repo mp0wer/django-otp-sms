@@ -6,3 +6,4 @@
 *.rar
 dist/
 /*.egg-info
+/fabfile.py

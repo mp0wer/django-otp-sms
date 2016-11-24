@@ -55,6 +55,8 @@ class ProstorAdapter(BaseAdapter):
         if not answer.startswith('accepted'):
             raise AdapterError(answer)
 
+        return answer
+
     def status(self, id):
         """Retrieve sms status by it's id """
         params = {'id': id}

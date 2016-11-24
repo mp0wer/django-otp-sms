@@ -17,6 +17,7 @@ setup(
     license='MIT',
     description='Django приложение для аутентификации через sms',
     long_description=README,
+    url='https://bitbucket.org/mPower/django-otp-sms',
     author='Mpower',
     author_email='mpower.public@yandex.ru',
     classifiers=[
@@ -31,7 +32,7 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     install_requires=[
-        'Django>=1.7,<1.9',
+        'Django>=1.7',
         'django-otp',
         'django-phonenumber-field',
         'django-formtools'

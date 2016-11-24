@@ -60,3 +60,6 @@ Django приложение для аутентификации через SMS
 
 **OTP_SMS_TOKEN_TEMPLATE**
     шаблон SMS, к примеру "Ваш пароль {token}"
+
+**OTP_SMS_NOTIFY_ADMINS_ADAPTER_ERROR**
+    True или False, отправлять или нет администраторам ошибки при отправке смс

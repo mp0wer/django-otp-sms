@@ -7,13 +7,14 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
+from django.core.mail import mail_admins
 from phonenumber_field.formfields import PhoneNumberField
 from .models import SMSDevice
 from .conf import settings
 from .adapters import AdapterError
 
 
-class SMSAuthenticationFormMixin(object):
+class SMSFormMixin(object):
     def clean_otp(self):
         now = datetime.now()
         attempt = self.request.session.get(settings.OTP_SMS_SESSION_KEY_ATTEMPT, 0)
@@ -51,11 +52,23 @@ class SMSAuthenticationFormMixin(object):
         except AdapterError as e:
             if settings.DEBUG:
                 raise e
+            elif settings.OTP_SMS_NOTIFY_ADMINS_ADAPTER_ERROR:
+                mail_admins('SMS send error', 'AdapterError: %s' % e.message)
             raise forms.ValidationError(_('Error sending sms'))
+
+    def verify_token(self, number, token):
+        device = SMSDevice.get(self.request, number)
+        return device and device.verify_token(token)
 
 
 class SMSAuthenticationForm(AuthenticationForm):
     username = PhoneNumberField(label=_('Phone number'))
+    password = forms.CharField(label=_('Confirmation code'), widget=forms.PasswordInput)
+
+    error_messages = {
+        'invalid_login': _("Please enter a correct phone number and confirmation code"),
+        'inactive': _("This account is inactive."),
+    }
 
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -75,7 +88,7 @@ class SMSAuthenticationForm(AuthenticationForm):
         return self.cleaned_data
 
 
-class SMSSendForm(SMSAuthenticationFormMixin, forms.ModelForm):
+class SMSSendForm(SMSFormMixin, forms.ModelForm):
     class Meta:
         model = SMSDevice
         fields = ('number',)

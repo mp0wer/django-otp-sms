@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-25 18:59+0300\n"
+"POT-Creation-Date: 2016-11-24 13:29+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,32 +19,188 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: forms.py:36
+#: adapters/smsru.py:16
+msgid "Message not found"
+msgstr "Сообщение не найдено"
+
+#: adapters/smsru.py:17
+msgid "Message is in the queue"
+msgstr "Сообщение находится в нашей очереди"
+
+#: adapters/smsru.py:18
+msgid "Message is on the way to the operator"
+msgstr "Сообщение передается оператору"
+
+#: adapters/smsru.py:19
+msgid "Message is on the way to the recipient"
+msgstr "Сообщение отправлено (в пути)"
+
+#: adapters/smsru.py:20
+msgid "Message delivered"
+msgstr "Сообщение доставлено"
+
+#: adapters/smsru.py:21
+msgid "Message failed: out of time"
+msgstr "Не может быть доставлено: время жизни истекло"
+
+#: adapters/smsru.py:22
+msgid "Message failed: cancelled by the operator"
+msgstr "Не может быть доставлено: удалено оператором"
+
+#: adapters/smsru.py:23
+msgid "Message failed: phone malfunction"
+msgstr "Не может быть доставлено: сбой в телефоне"
+
+#: adapters/smsru.py:24
+msgid "Message failed: unknown reason"
+msgstr "Не может быть доставлено: неизвестная причина"
+
+#: adapters/smsru.py:25
+msgid "Message declined"
+msgstr "Не может быть доставлено: отклонено"
+
+#: adapters/smsru.py:26
+msgid "Message failed: exceeded limit of messages to this number per day"
+msgstr "Не может быть доставлено: превышено количество сообщений на этот номер в день"
+
+#: adapters/smsru.py:27
+msgid ""
+"Message failed: exceeded limit of identical messages to this number per "
+"minute"
+msgstr "Не может быть доставлено: превышено количество одинаковых сообщений на этот номер в минуту"
+
+#: adapters/smsru.py:28
+msgid ""
+"Message failed: exceeded limit of identical messages to this number per day"
+msgstr "Не может быть доставлено: превышено количество одинаковых сообщений на этот номер в день"
+
+#: adapters/smsru.py:30
+msgid "The supplied API key is wrong"
+msgstr "Неправильный api_id"
+
+#: adapters/smsru.py:31
+msgid "Out of money"
+msgstr "Не хватает средств на лицевом счету"
+
+#: adapters/smsru.py:32
+msgid "Bad recipient"
+msgstr "Неправильно указан получатель"
+
+#: adapters/smsru.py:33
+msgid "Message text not specified"
+msgstr "Нет текста сообщения"
+
+#: adapters/smsru.py:34
+msgid "Bad sender (unapproved)"
+msgstr "Имя отправителя не согласовано с администрацией"
+
+#: adapters/smsru.py:35
+msgid "Message too long"
+msgstr "Сообщение слишком длинное (превышает 8 СМС)"
+
+#: adapters/smsru.py:36
+msgid "Day message limit reached"
+msgstr "Будет превышен или уже превышен дневной лимит на отправку сообщений"
+
+#: adapters/smsru.py:37
+msgid "Can't send messages to that number"
+msgstr "На этот номер (или один из номеров) нельзя отправлять сообщения, либо указано более 100 номеров в списке получателей"
+
+#: adapters/smsru.py:38
+msgid "Wrong time"
+msgstr "Параметр time указан неправильно"
+
+#: adapters/smsru.py:39
+msgid "Blacklisted recipient"
+msgstr "Вы добавили этот номер (или один из номеров) в стоп-лист"
+
+#: adapters/smsru.py:40
+msgid "GET used when POST must have been"
+msgstr "Используется GET, где необходимо использовать POST"
+
+#: adapters/smsru.py:41
+msgid "Unknown method"
+msgstr "Метод не найден"
+
+#: adapters/smsru.py:42
+msgid "Text must be in UTF-8"
+msgstr "Текст сообщения необходимо передать в кодировке UTF-8"
+
+#: adapters/smsru.py:43
+msgid "The service is temporarily unavailable"
+msgstr "Сервис временно недоступен, попробуйте чуть позже"
+
+#: adapters/smsru.py:44
+msgid "Exceeded limit of messages per day"
+msgstr "Превышен общий лимит количества сообщений на этот номер в день"
+
+#: adapters/smsru.py:45
+msgid "Exceeded limit of identical messages per minute"
+msgstr "Превышен лимит одинаковых сообщений на этот номер в минуту"
+
+#: adapters/smsru.py:46
+msgid "Exceeded limit of identical messages per day"
+msgstr "Превышен лимит одинаковых сообщений на этот номер в день"
+
+#: adapters/smsru.py:47
+msgid "Invalid token"
+msgstr "Неправильный token (возможно истек срок действия, либо ваш IP изменился)"
+
+#: adapters/smsru.py:48
+msgid "Wrong password"
+msgstr "Неправильный пароль, либо пользователь не найден"
+
+#: adapters/smsru.py:49
+msgid "User authenticated, but not confirmed"
+msgstr "Пользователь авторизован, но аккаунт не подтвержден (пользователь не ввел код, присланный в регистрационной смс)"
+
+#: adapters/smsru.py:87
+msgid "Unknown status"
+msgstr "Неизвестный статус"
+
+#: forms.py:38
+#, python-format
 msgid "You have exceeded the limit SMS, try after %(minutes)d minutes"
 msgstr "Вы превысили лимит SMS, попробуйте через %(minutes)d минут"
 
-#: forms.py:51 forms.py:54
+#: forms.py:57
 msgid "Error sending sms"
 msgstr "Ошибка при отправке SMS"
 
-#: forms.py:58 models.py:26
+#: forms.py:65 models.py:25
 msgid "Phone number"
 msgstr "Телефон"
 
-#: models.py:27
+#: forms.py:66
+msgid "Confirmation code"
+msgstr "Код подтверждения"
+
+#: forms.py:69
+msgid "Please enter a correct phone number and confirmation code"
+msgstr ""
+"Пожалуйста введите правильный номер телефона и код подтверждения из смс"
+
+#: forms.py:70
+msgid "This account is inactive."
+msgstr "Ваш пользователь заблокирован"
+
+#: models.py:26
 msgid "The mobile number to deliver tokens to."
 msgstr "Телефон для отправки одноразового пароля"
 
-#: models.py:34
+#: models.py:33
 msgid "A random key used to generate tokens (hex-encoded)."
 msgstr "Случайный ключ для генерации одноразового пароля"
 
-#: models.py:39
+#: models.py:38
 msgid ""
 "The t value of the latest verified token. The next token must be at a higher "
 "time step."
 msgstr ""
 
-#: models.py:43
+#: models.py:42
 msgid "SMS Device"
 msgstr "SMS устройтство"
+
+msgid "Enter a valid phone number."
+msgstr "Введите верный номер телефона в формате +79001234567"

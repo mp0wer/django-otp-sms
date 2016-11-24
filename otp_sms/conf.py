@@ -15,9 +15,10 @@ class Settings(object):
         'OTP_SMS_AUTH': None,
         'OTP_SMS_FROM': None,
         'OTP_SMS_TOKEN_TEMPLATE': '{token}',
-        'OTP_SMS_TOKEN_VALIDITY': 30,
+        'OTP_SMS_TOKEN_VALIDITY': 300,
         'OTP_SMS_TEST_NUMBER': '+79000000000',
-        'OTP_SMS_ADAPTER': 'otp_sms.adapters.ConsoleAdapter'
+        'OTP_SMS_ADAPTER': 'otp_sms.adapters.ConsoleAdapter',
+        'OTP_SMS_NOTIFY_ADMINS_ADAPTER_ERROR': True
     }
 
     def __getattr__(self, name):
