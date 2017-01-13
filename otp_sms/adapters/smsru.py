@@ -73,7 +73,7 @@ class SMSRuAdapter(BaseAdapter):
         try:
             res = urllib2.urlopen(url).read()
         except IOError as e:
-            raise AdapterError(e.code)
+            raise AdapterError(e.message)
         return res
 
     def _call(self, method, args={}):
