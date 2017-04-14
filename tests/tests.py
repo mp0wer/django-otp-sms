@@ -4,6 +4,7 @@ from __future__ import unicode_literals, absolute_import
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.core.urlresolvers import reverse_lazy
+from django.utils.encoding import force_str
 from django.contrib.auth import get_user_model
 from django.contrib.auth.middleware import AuthenticationMiddleware
 from otp_sms.conf import settings
@@ -21,6 +22,9 @@ class SMSAuthViewTestCase(TestCase):
     def setUp(self):
         self.user_model = get_user_model()
         self.auth_middleware = AuthenticationMiddleware()
+        # for Django 1.8 + python 3
+        self.login_url = force_str(self.login_url)
+        self.signup_url = force_str(self.signup_url)
 
     def processView(self, url):
         response = self.client.get(url)
