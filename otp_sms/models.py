@@ -5,6 +5,8 @@ import time
 from binascii import unhexlify
 from django.db import models
 from django.utils.module_loading import import_string
+from django.utils.six import python_2_unicode_compatible
+from django.utils.encoding import force_text
 from django_otp.oath import TOTP
 from django_otp.util import random_hex, hex_validator
 from django.utils.translation import ugettext_lazy as _
@@ -13,13 +15,14 @@ from .conf import settings
 
 
 def default_key():
-    return random_hex(20)
+    return force_text(random_hex(20))
 
 
 def key_validator(value):
     return hex_validator(20)(value)
 
 
+@python_2_unicode_compatible
 class SMSDevice(models.Model):
     number = PhoneNumberField(
         verbose_name=_("Phone number"),
@@ -41,7 +44,7 @@ class SMSDevice(models.Model):
     class Meta(object):
         verbose_name = _("SMS Device")
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.number
 
     @classmethod
@@ -63,11 +66,13 @@ class SMSDevice(models.Model):
     def bin_key(self):
         return unhexlify(self.key.encode())
 
-    def generate_token(self):
+    def generate_token(self, deliver=True):
         totp = self.totp_obj()
         token = format(totp.token(), '06d')
         message = settings.OTP_SMS_TOKEN_TEMPLATE.format(token=token)
-        self._deliver_token(message)
+        if deliver and not settings.OTP_SMS_TEST_MODE:
+            self._deliver_token(message)
+        return token
 
     def _deliver_token(self, token):
         adapter_class = import_string(settings.OTP_SMS_ADAPTER)
@@ -75,6 +80,9 @@ class SMSDevice(models.Model):
         adapter.send(self.number, token, sender=settings.OTP_SMS_FROM)
 
     def verify_token(self, token):
+        if settings.OTP_SMS_TEST_MODE:
+            return True
+
         try:
             token = int(token)
         except ValueError:

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import
 
-import urllib2
-import urllib
+from django.utils.six.moves.urllib import request as urllib_request
+from django.utils.six.moves.urllib import parse as urllib_parse
+
 from .base import BaseAdapter, AdapterError
 
 
@@ -10,20 +11,21 @@ class ProstorAdapter(BaseAdapter):
     base_url = 'http://api.prostor-sms.ru/messages/v2'
 
     def __init__(self, auth):
+        super(ProstorAdapter, self).__init__(auth)
         self.login = auth['LOGIN']
         self.password = auth['PASSWORD']
 
     def _send_request(self, uri, params=None):
         url = self._get_url(uri, params)
-        request = urllib2.Request(url)
-        passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        request = urllib_request.Request(url)
+        passman = urllib_request.HTTPPasswordMgrWithDefaultRealm()
         passman.add_password(None, url, self.login, self.password)
-        authhandler = urllib2.HTTPBasicAuthHandler(passman)
+        authhandler = urllib_request.HTTPBasicAuthHandler(passman)
         try:
-            opener = urllib2.build_opener(authhandler)
+            opener = urllib_request.build_opener(authhandler)
             data = opener.open(request).read()
             return data
-        except IOError, e:
+        except IOError as e:
             raise AdapterError(e.code)
 
     def _get_url(self, uri, params=None):
@@ -35,7 +37,7 @@ class ProstorAdapter(BaseAdapter):
                     del params[k]
                 if isinstance(v, unicode):
                     params[k] = v.encode('utf-8')
-            param_str = urllib.urlencode(params)
+            param_str = urllib_parse.urlencode(params)
         if param_str:
             return "%s?%s" % (url, param_str)
         return url

@@ -4,6 +4,8 @@
 *.tar*
 *.zip
 *.rar
+.tox/
 dist/
+/.python-version
 /*.egg-info
 /fabfile.py

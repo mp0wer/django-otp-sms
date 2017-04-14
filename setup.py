@@ -17,24 +17,31 @@ setup(
     license='MIT',
     description='Django приложение для аутентификации через sms',
     long_description=README,
-    url='https://bitbucket.org/mPower/django-otp-sms',
+    url='https://github.com/mp0wer/django-otp-sms',
     author='Mpower',
     author_email='mpower.public@yandex.ru',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
+        'Framework :: Django :: 1.8',
+        'Framework :: Django :: 1.9',
+        'Framework :: Django :: 1.10',
+        'Framework :: Django :: 1.11',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     install_requires=[
-        'Django>=1.7',
+        'Django>=1.8',
+        'django-appconf>=1.0.2',
         'django-otp',
         'django-phonenumber-field',
         'django-formtools'
-    ]
+    ],
+    test_suite='runtests.runtests'
 )

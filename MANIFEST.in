@@ -1,2 +1,6 @@
 include README.rst
+include tox.ini
+include .travis.yml
+include runtests.py
+include manage.py
 recursive-include otp_sms/locale *.po *.mo

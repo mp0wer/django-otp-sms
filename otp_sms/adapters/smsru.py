@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import
 
-import urllib2
-import urllib
+from django.utils.six.moves.urllib import request as urllib_request
+from django.utils.six.moves.urllib import parse as urllib_parse
 import hashlib
 import time
 from django.utils.translation import ugettext_lazy as _
@@ -69,9 +69,9 @@ class SMSRuAdapter(BaseAdapter):
             args["sig"] = hashlib.md5(self.password + args["token"]).hexdigest()
             del args["api_id"]
 
-        url = "%s/%s?%s" % (self.BASE_URL, method, urllib.urlencode(args))
+        url = "%s/%s?%s" % (self.BASE_URL, method, urllib_parse.urlencode(args))
         try:
-            res = urllib2.urlopen(url).read()
+            res = urllib_request.urlopen(url).read()
         except IOError as e:
             raise AdapterError(e.message)
         return res

@@ -2,34 +2,24 @@
 from __future__ import unicode_literals, absolute_import
 
 from datetime import timedelta
-from django.conf import settings as django_settings
+from django.conf import settings
+from appconf import AppConf
 
 
-class Settings(object):
-    _defaults = {
-        'OTP_SMS_SESSION_KEY_DEVICE_ID': 'OTP-DEVICE-ID',
-        'OTP_SMS_SESSION_KEY_LAST_ATTEMPT_TIME': 'OTP-LAST-TIME',
-        'OTP_SMS_SESSION_KEY_ATTEMPT': 'OTP-ATTEMPT',
-        'OTP_SMS_COUNT_ATTEMPTS': 3,
-        'OTP_SMS_LATENCY_ATTEMPTS': timedelta(minutes=5),
-        'OTP_SMS_AUTH': None,
-        'OTP_SMS_FROM': None,
-        'OTP_SMS_TOKEN_TEMPLATE': '{token}',
-        'OTP_SMS_TOKEN_VALIDITY': 300,
-        'OTP_SMS_TEST_NUMBER': '+79000000000',
-        'OTP_SMS_ADAPTER': 'otp_sms.adapters.ConsoleAdapter',
-        'OTP_SMS_NOTIFY_ADMINS_ADAPTER_ERROR': True
-    }
+class OTPSmsConf(AppConf):
+    SESSION_KEY_DEVICE_ID = 'OTP-DEVICE-ID'
+    SESSION_KEY_LAST_ATTEMPT_TIME = 'OTP-LAST-TIME'
+    SESSION_KEY_ATTEMPT = 'OTP-ATTEMPT'
+    COUNT_ATTEMPTS = 3
+    LATENCY_ATTEMPTS = timedelta(minutes=5)
+    AUTH = None
+    FROM = None
+    TOKEN_TEMPLATE = '{token}'
+    TOKEN_VALIDITY = 300
+    TEST_NUMBER = '+79000000000'
+    ADAPTER = 'otp_sms.adapters.ConsoleAdapter'
+    NOTIFY_ADMINS_ADAPTER_ERROR = True
+    TEST_MODE = False
 
-    def __getattr__(self, name):
-        if hasattr(django_settings, name):
-            value = getattr(django_settings, name)
-        elif name in self._defaults:
-            value = self._defaults[name]
-        else:
-            raise AttributeError(name)
-
-        return value
-
-
-settings = Settings()
+    class Meta:
+        prefix = 'OTP_SMS'
