@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/mp0wer/django-otp-sms.svg?branch=master
+    :target: https://travis-ci.org/mp0wer/django-otp-sms
+
 ==============
 django-otp-sms
 ==============
