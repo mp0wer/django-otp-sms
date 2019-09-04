@@ -3,6 +3,7 @@ from __future__ import unicode_literals, absolute_import
 
 from django.utils.six.moves.urllib import request as urllib_request
 from django.utils.six.moves.urllib import parse as urllib_parse
+from django.utils.encoding import force_text
 import hashlib
 import time
 from django.utils.translation import ugettext_lazy as _
@@ -74,7 +75,7 @@ class SMSRuAdapter(BaseAdapter):
             res = urllib_request.urlopen(url).read()
         except IOError as e:
             raise AdapterError(e.message)
-        return res
+        return force_text(res)
 
     def _call(self, method, args={}):
         res = self._call_raw(method, args)
@@ -104,8 +105,7 @@ class SMSRuAdapter(BaseAdapter):
         """Sends the message to the specified recipient.  Returns a numeric
         status code, its text description and, if the message was successfully
         accepted, its reference number."""
-        if not isinstance(text, unicode):
-            text = unicode(text)
+        text = force_text(text)
         args = {"to": to, "text": text.encode("utf-8")}
         if sender:
             args["from"] = sender

@@ -3,6 +3,8 @@ from __future__ import unicode_literals, absolute_import
 
 from django.utils.six.moves.urllib import request as urllib_request
 from django.utils.six.moves.urllib import parse as urllib_parse
+from django.utils.six import text_type
+from django.utils.encoding import force_text
 
 from .base import BaseAdapter, AdapterError
 
@@ -24,9 +26,9 @@ class ProstorAdapter(BaseAdapter):
         try:
             opener = urllib_request.build_opener(authhandler)
             data = opener.open(request).read()
-            return data
         except IOError as e:
             raise AdapterError(e.code)
+        return force_text(data)
 
     def _get_url(self, uri, params=None):
         url = "%s/%s/" % (self.base_url, uri)
@@ -35,7 +37,7 @@ class ProstorAdapter(BaseAdapter):
             for k, v in params.items():
                 if v is None:
                     del params[k]
-                if isinstance(v, unicode):
+                if isinstance(v, text_type):
                     params[k] = v.encode('utf-8')
             param_str = urllib_parse.urlencode(params)
         if param_str:

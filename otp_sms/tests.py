@@ -83,13 +83,13 @@ class SMSAuthViewTestCase(TestCase):
         user = self.user_model.objects.create_user(self.user_phone)
         request, response = self.processWizardView(SMSAuthenticationWizardView.as_view())
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(request.user.is_authenticated())
+        self.assertTrue(request.user.is_authenticated)
         self.assertEqual(request.user, user)
 
     def test_otp_sms_signup(self):
         request, response = self.processWizardView(SMSAuthenticationWizardView.as_view(create_user_if_not_exists=True))
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(request.user.is_authenticated())
+        self.assertTrue(request.user.is_authenticated)
         self.assertEqual(request.user.username, self.user_phone)
 
 

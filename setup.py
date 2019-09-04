@@ -33,6 +33,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
@@ -41,7 +42,8 @@ setup(
         'django-appconf>=1.0.2',
         'django-otp',
         'django-phonenumber-field',
-        'django-formtools'
+        'django-formtools',
+        'phonenumbers',
     ],
     test_suite='runtests.runtests'
 )
