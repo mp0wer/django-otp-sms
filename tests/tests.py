@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import
 
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.encoding import force_str
 from django.contrib.auth import get_user_model
 from django.contrib.auth.middleware import AuthenticationMiddleware

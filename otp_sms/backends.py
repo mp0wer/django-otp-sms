@@ -12,7 +12,7 @@ class SMSBackend(ModelBackend):
         super(SMSBackend, self).__init__()
         self.UserModel = get_user_model()
 
-    def authenticate(self, number=None, token=None, request=None):
+    def authenticate(self, request, number=None, token=None):
         user = None
         if request:
             device = SMSDevice.get(request, number)
