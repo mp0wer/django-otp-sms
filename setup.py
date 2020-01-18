@@ -39,9 +39,9 @@ setup(
     install_requires=[
         'Django>=1.11',
         'django-appconf>=1.0.2',
-        'django-otp',
-        'django-phonenumber-field',
-        'django-formtools',
+        'django-otp>=0.5',
+        'django-phonenumber-field>=2.0,<3.0',
+        'django-formtools>=2.2',
         'phonenumbers',
     ],
     test_suite='runtests.runtests'

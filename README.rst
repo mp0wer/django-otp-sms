@@ -1,3 +1,6 @@
+.. image:: https://img.shields.io/pypi/v/django-otp-sms?color=blue
+   :target: https://pypi.org/project/django-otp-sms/
+   :alt: PyPI
 .. image:: https://travis-ci.org/mp0wer/django-otp-sms.svg?branch=master
     :target: https://travis-ci.org/mp0wer/django-otp-sms
 
