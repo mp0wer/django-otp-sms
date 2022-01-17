@@ -53,7 +53,7 @@ class SMSFormMixin(object):
             if settings.DEBUG:
                 raise e
             elif settings.OTP_SMS_NOTIFY_ADMINS_ADAPTER_ERROR:
-                mail_admins('SMS send error', 'AdapterError: %s' % e.message)
+                mail_admins('SMS send error', 'AdapterError: %s' % e)
             raise forms.ValidationError(_('Error sending sms'))
 
     def verify_token(self, number, token):
