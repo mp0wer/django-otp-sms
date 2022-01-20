@@ -5,6 +5,7 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
+from django.utils.module_loading import import_string
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import (
@@ -58,6 +59,13 @@ class SMSAuthenticationWizardView(SessionWizardView):
                 return self.render(form)
         return super(SMSAuthenticationWizardView, self).render_next_step(form, **kwargs)
 
+    def get_context_data(self, form, **kwargs):
+        kwargs['by_call_is_available'] = self.by_call_is_available()
+        if self.steps.current == self.AUTH_FORM_KEY:
+            sms_form_data = self.storage.get_step_data(self.SMS_FORM_KEY) or {}
+            kwargs['by_call'] = bool(sms_form_data.get('{}-by_call'.format(self.SMS_FORM_KEY)))
+        return super(SMSAuthenticationWizardView, self).get_context_data(form, **kwargs)
+
     def render_done(self, form, **kwargs):
         user = form.get_user()
         phone = form.cleaned_data.get('username')
@@ -81,3 +89,8 @@ class SMSAuthenticationWizardView(SessionWizardView):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         return redirect_to
+
+    def by_call_is_available(self):
+        adapter_class = import_string(settings.OTP_SMS_ADAPTER)
+        adapter = adapter_class(settings.OTP_SMS_AUTH)
+        return adapter.call_is_available()

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import
 
+import hashlib
+import time
+import json
 from django.utils.six.moves.urllib import request as urllib_request
 from django.utils.six.moves.urllib import parse as urllib_parse
 from django.utils.encoding import force_text
-import hashlib
-import time
 from django.utils.translation import ugettext_lazy as _
 from .base import BaseAdapter, AdapterError
 
@@ -140,3 +141,22 @@ class SMSRuAdapter(BaseAdapter):
     def token(self):
         """Returns a token."""
         return self._call_raw("auth/get_token")
+
+    def call_is_available(self):
+        return True
+
+    def _call_json(self, method, args={}):
+        res = self._call_raw(method, args)
+        try:
+            data = json.loads(res)
+        except json.JSONDecodeError as e:
+            raise AdapterError(str(e))
+        return data
+
+    def call(self, number, **kwargs):
+        res = self._call_json('code/call', {
+            'phone': number
+        })
+        if res['status'] == 'OK':
+            return res['code']
+        raise AdapterError(res['status_text'])

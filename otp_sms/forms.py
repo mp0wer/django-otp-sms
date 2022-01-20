@@ -44,11 +44,11 @@ class SMSFormMixin(object):
         self.request.session[settings.OTP_SMS_SESSION_KEY_LAST_ATTEMPT_TIME] = time.mktime(datetime.now().timetuple())
         self.request.session[settings.OTP_SMS_SESSION_KEY_ATTEMPT] = attempt + 1
 
-    def generate_token(self, device):
+    def generate_token(self, device, by_call=False):
         self.request.session[settings.OTP_SMS_SESSION_KEY_DEVICE_ID] = device.pk
 
         try:
-            device.generate_token()
+            device.generate_token(by_call=by_call)
         except AdapterError as e:
             if settings.DEBUG:
                 raise e
@@ -89,6 +89,8 @@ class SMSAuthenticationForm(AuthenticationForm):
 
 
 class SMSSendForm(SMSFormMixin, forms.ModelForm):
+    by_call = forms.BooleanField(required=False, widget=forms.HiddenInput)
+
     class Meta:
         model = SMSDevice
         fields = ('number',)
@@ -103,9 +105,10 @@ class SMSSendForm(SMSFormMixin, forms.ModelForm):
 
     def save(self, *args, **kwargs):
         instance = super(SMSSendForm, self).save(*args, **kwargs)
+        by_call = self.cleaned_data.get('by_call', False)
 
         try:
-            self.generate_token(instance)
+            self.generate_token(instance, by_call=by_call)
         except forms.ValidationError as e:
             self.add_error(None, e)
             return None

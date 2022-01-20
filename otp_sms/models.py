@@ -36,6 +36,12 @@ class SMSDevice(models.Model):
         help_text=_("A random key used to generate tokens (hex-encoded).")
     )
 
+    code = models.CharField(
+        max_length=10,
+        null=True,
+        help_text=_("The code to verify call")
+    )
+
     last_t = models.BigIntegerField(
         default=-1,
         help_text=_("The t value of the latest verified token. The next token must be at a higher time step.")
@@ -66,22 +72,28 @@ class SMSDevice(models.Model):
     def bin_key(self):
         return unhexlify(self.key.encode())
 
-    def generate_token(self, deliver=True):
-        totp = self.totp_obj()
-        token = format(totp.token(), '06d')
-        message = settings.OTP_SMS_TOKEN_TEMPLATE.format(token=token)
-        if deliver and not settings.OTP_SMS_TEST_MODE:
-            self._deliver_token(message)
-        return token
-
-    def _deliver_token(self, token):
+    def generate_token(self, deliver=True, by_call=False):
         adapter_class = import_string(settings.OTP_SMS_ADAPTER)
         adapter = adapter_class(settings.OTP_SMS_AUTH)
-        adapter.send(self.number, token, sender=settings.OTP_SMS_FROM)
+        totp = self.totp_obj()
+        token = format(totp.token(), '06d')
+
+        if deliver and not settings.OTP_SMS_TEST_MODE:
+            if by_call:
+                token = adapter.call(self.number)
+                self.code = token
+                self.save(update_fields=['code'])
+            else:
+                message = settings.OTP_SMS_TOKEN_TEMPLATE.format(token=token)
+                adapter.send(self.number, message, sender=settings.OTP_SMS_FROM)
+        return token
 
     def verify_token(self, token):
         if settings.OTP_SMS_TEST_MODE:
             return True
+
+        if self.code:
+            return self.code == token
 
         try:
             token = int(token)

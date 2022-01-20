@@ -9,6 +9,12 @@ class BaseAdapter(object):
     def send(self, number, message, **kwargs):
         raise NotImplementedError
 
+    def call(self, number, **kwargs):
+        pass
+
+    def call_is_available(self):
+        return False
+
 
 class ConsoleAdapter(BaseAdapter):
     def send(self, number, message, **kwargs):
